@@ -1,55 +1,44 @@
 const fs = require("fs");
-const login = require("fca-unstable");
+const login = require("ws3-fca");
 
-global.client = {
-  commands: new Map()
-};
-
-const commandFiles = fs.readdirSync("./commands").filter(file => file.endsWith(".js"));
-
-for (const file of commandFiles) {
-  const command = require(`./commands/${file}`);
-  if (command.config && command.config.name) {
-    global.client.commands.set(command.config.name, command);
-    console.log(`[LOADED] Command: ${command.config.name}`);
-  }
-}
-
+// Siguraduhing mayroon kang appstate.json file para sa login credentials mo
 if (!fs.existsSync("appstate.json")) {
-  console.error("❌ Error: Walang nakitang 'appstate.json'. Ilagay ang iyong Facebook appstate cookies sa root folder.");
+  console.error("Error: Walang makitang appstate.json file!");
   process.exit(1);
 }
 
 login({ appState: JSON.parse(fs.readFileSync("appstate.json", "utf8")) }, (err, api) => {
   if (err) {
-    console.error("❌ Login Failed:", err);
+    console.error("Login Error:", err);
     return;
   }
 
-  console.log("🚀 Sinzu Messenger Bot is successfully logged in and running!");
-  api.setOptions({ listenEvents: true, selfListen: false });
+  console.log("Tagumpay na naka-login ang bot gamit ang ws3-fca!");
 
-  const listener = api.listenMqtt((err, event) => {
-    if (err) return console.error("Listen Error:", err);
+  // Itakda ang bot options kung kinakailangan
+  api.setOptions({
+    listenEvents: true,
+    selfListen: false,
+    updatePresence: true,
+    forceLogin: true
+  });
 
-    if (event.type === "message" || event.type === "message_reply") {
-      const messageBody = event.body ? event.body.trim() : "";
-      const prefix = ".";
+  // Makinig sa mga mensahe at pangyayari sa chat
+  const listener = api.listenListener((err, event) => {
+    if (err) return console.error("Listener Error:", err);
 
-      if (!messageBody.startsWith(prefix)) return;
+    switch (event.type) {
+      case "message":
+        console.log(`May natanggap na mensahe mula kay ${event.senderID}: ${event.body}`);
+        
+        // Halimbawa ng simpleng reply command
+        if (event.body === "!ping") {
+          api.sendMessage("Pong! Aktibo ang bot.", event.threadID, event.messageID);
+        }
+        break;
 
-      const args = messageBody.slice(prefix.length).trim().split(/ +/);
-      const commandName = args.shift().toLowerCase();
-
-      const command = global.client.commands.get(commandName);
-      if (!command) return;
-
-      try {
-        command.run({ api, event, args });
-      } catch (error) {
-        console.error(`Error executing ${commandName}:`, error);
-        api.sendMessage("⚠️ Nagkaroon ng error habang pinapatakbo ang command na ito.", event.threadID, event.messageID);
-      }
+      default:
+        break;
     }
   });
 });
