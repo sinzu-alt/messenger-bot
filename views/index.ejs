@@ -6,47 +6,38 @@
     <title>Messenger Bot Dashboard</title>
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        body { font-family: Arial, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .container { background: #1e293b; padding: 30px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 500px; border: 1px solid #334155; }
         h2 { text-align: center; color: #38bdf8; margin-bottom: 25px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #cbd5e1; font-size: 14px; }
         input[type="text"], textarea { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #475569; color: #f8fafc; border-radius: 6px; font-size: 14px; }
-        input[type="text"]:focus, textarea:focus { outline: none; border-color: #38bdf8; }
         textarea { resize: vertical; height: 100px; font-family: monospace; font-size: 12px; }
-        button { background-color: #0284c7; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        button { background-color: #0284c7; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
         button:hover { background-color: #0369a1; }
-        .alert { background-color: #065f46; color: #d1fae5; padding: 12px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-size: 14px; border: 1px solid #047857; }
-        .hint { font-size: 11px; color: #94a3b8; margin-top: 4px; display: block; }
+        .alert { background-color: #065f46; color: #d1fae5; padding: 12px; border-radius: 6px; margin-bottom: 20px; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Bot Configuration</h2>
-        
+        <h2>Bot Dashboard</h2>
         <% if (success) { %>
             <div class="alert"><%= success %></div>
         <% } %>
-
         <form action="/save" method="POST">
             <div class="form-group">
                 <label for="cookie">Appstate Cookie / C3C:</label>
-                <textarea id="cookie" name="cookie" placeholder="Ilagay dito ang JSON cookie o c3c string ng Facebook account..." required><%= config.cookie %></textarea>
-                <small class="hint">Siguraduhing tama ang format ng iyong cookie o c3c para hindi ma-checkpoint ang bot.</small>
+                <textarea id="cookie" name="cookie" required><%= config.cookie %></textarea>
             </div>
-            
             <div class="form-group">
                 <label for="prefix">Bot Prefix:</label>
-                <input type="text" id="prefix" name="prefix" value="<%= config.prefix %>" placeholder="Halimbawa: !" required>
+                <input type="text" id="prefix" name="prefix" value="<%= config.prefix %>" required>
             </div>
-            
             <div class="form-group">
-                <label for="adminId">Admin Bot ID (Facebook UID):</label>
-                <input type="text" id="adminId" name="adminId" value="<%= config.adminId %>" placeholder="Ilagay ang Facebook ID ng admin..." required>
-                <small class="hint">Magagamit ito para sa mga command na tanging admin lang ang pwedeng gumamit.</small>
+                <label for="adminId">Admin Bot ID:</label>
+                <input type="text" id="adminId" name="adminId" value="<%= config.adminId %>" required>
             </div>
-
-            <button type="submit">I-save ang mga Pagbabago</button>
+            <button type="submit">I-save ang Settings</button>
         </form>
     </div>
 </body>
