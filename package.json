@@ -1,0 +1,17 @@
+{
+  "name": "sinzu-messenger-bot",
+  "version": "3.0.0",
+  "description": "Advanced Messenger Bot with 35+ commands, economy, and tools",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fca-unstable": "^1.7.5",
+    "axios": "^1.6.8",
+    "fs-extra": "^11.2.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
